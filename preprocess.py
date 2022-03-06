@@ -1,4 +1,5 @@
 import ast
+import sys
 from glob import glob
 from os.path import exists
 
@@ -11,7 +12,7 @@ def evaluate(x):
     return ast.literal_eval(x)
 
 
-def preprocess_data():
+def aggregate_data(save=False):
     data_files = glob("data/raw/*.csv")
     data_files.sort()
 
@@ -32,6 +33,15 @@ def preprocess_data():
     ted_talks.drop("url", axis=1, inplace=True)
     ted_talks.drop("all_speakers", axis=1, inplace=True)
     ted_talks.drop("available_lang", axis=1, inplace=True)
+
+    if save:
+        ted_talks.to_csv("data/ted_talks_agg.csv", index=False)
+
+    return ted_talks
+
+
+def preprocess_data():
+    ted_talks = aggregate_data()
 
     ted_talks.occupations = ted_talks.occupations.apply(lambda x: evaluate(x)[0] if pd.notnull(x) else ["unknown"])
     ted_talks.about_speakers = ted_talks.about_speakers.apply(lambda x: evaluate(x)[0] if pd.notnull(x) else "unknown")
@@ -64,4 +74,7 @@ def load_data():
 
 
 if __name__ == "__main__":
-    preprocess_data()
+    if len(sys.argv) > 1 and sys.argv[1] == "agg":
+        aggregate_data(save=True)
+    elif len(sys.argv) == 0:
+        preprocess_data()

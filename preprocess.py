@@ -5,7 +5,7 @@ from os.path import exists
 import pandas as pd
 
 
-def to_dict(x):
+def evaluate(x):
     if pd.isna(x):
         return x
     return ast.literal_eval(x)
@@ -33,14 +33,14 @@ def preprocess_data():
     ted_talks.drop("all_speakers", axis=1, inplace=True)
     ted_talks.drop("available_lang", axis=1, inplace=True)
 
-    ted_talks.occupations = ted_talks.occupations.apply(lambda x: to_dict(x)[0] if pd.notnull(x) else ["unknown"])
-    ted_talks.about_speakers = ted_talks.about_speakers.apply(lambda x: to_dict(x)[0] if pd.notnull(x) else "unknown")
+    ted_talks.occupations = ted_talks.occupations.apply(lambda x: evaluate(x)[0] if pd.notnull(x) else ["unknown"])
+    ted_talks.about_speakers = ted_talks.about_speakers.apply(lambda x: evaluate(x)[0] if pd.notnull(x) else "unknown")
     ted_talks.recorded_date = ted_talks.apply(lambda x: x.recorded_date if pd.notnull(x.recorded_date) else x.published_date, axis=1)
 
     rate = (ted_talks.comments / ted_talks.views).median()
     ted_talks.comments = ted_talks.apply(lambda x: int(x.comments) if pd.notnull(x.comments) else int(rate * x.views), axis=1)
 
-    ted_talks.related_talks = ted_talks.related_talks.apply(lambda x: list(to_dict(x).keys()))
+    ted_talks.related_talks = ted_talks.related_talks.apply(lambda x: list(evaluate(x).keys()))
 
     ted_talks.rename(columns={"speaker_1": "speaker", "about_speakers": "about_speaker"}, inplace=True)
 
@@ -53,6 +53,12 @@ def load_data():
         preprocess_data()
 
     df = pd.read_csv("data/ted_talks_prepro.csv")
+
+    df.occupations = df.occupations.apply(evaluate)
+    df.topics = df.topics.apply(evaluate)
+    df.related_talks = df.related_talks.apply(evaluate)
+    df.recorded_date = pd.to_datetime(df.recorded_date)
+    df.published_date = pd.to_datetime(df.published_date)
 
     return df
 

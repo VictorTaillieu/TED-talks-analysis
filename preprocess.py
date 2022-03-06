@@ -1,13 +1,15 @@
 import ast
-from os.path import exists
 from glob import glob
+from os.path import exists
 
 import pandas as pd
+
 
 def to_dict(x):
     if pd.isna(x):
         return x
     return ast.literal_eval(x)
+
 
 def preprocess_data():
     data_files = glob("data/raw/*.csv")

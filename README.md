@@ -1,5 +1,9 @@
-# TED talks analysis
-IFT870 Project - TED talks analysis
+# IFT870 Project - TEDflix
+
+Maxime Lafont--Trevisan (lafm2724)  
+Gaëtan Lounes (loug2904)  
+Victor Taillieu (taiv2701)  
+Luca Vaio (vail3202)
 
 ## Prerequisites
 To install the requirements, you can use:
@@ -14,7 +18,7 @@ $ pip install -r requirements.txt
 ```
 $ python get_data.py
 ```
-This will create `raw` folder containing raw data files in `data`.
+This will download `ted_talks_en.csv` raw data file in `data`.
 
 ## Preprocess data
 Run `preprocess.py` script after getting raw data:

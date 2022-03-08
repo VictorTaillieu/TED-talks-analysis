@@ -18,7 +18,7 @@ $ pip install -r requirements.txt
 ```
 $ python get_data.py
 ```
-This will create `raw` folder containing raw data files in `data`.
+This will download `ted_talks_en.csv` raw data file in `data`.
 
 ## Preprocess data
 Run `preprocess.py` script after getting raw data:

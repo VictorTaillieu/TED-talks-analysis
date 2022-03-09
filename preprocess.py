@@ -48,9 +48,14 @@ def preprocess_data():
     ted_talks.related_talks = ted_talks.related_talks.apply(lambda x: list(evaluate(x).keys()))
 
     ted_talks.rename(columns={"speaker_1": "speaker", "about_speakers": "about_speaker"}, inplace=True)
-
+    
+    event_country_mapping = pd.read_csv("./event_country_mapping.csv")
+    
+    output_ted_talks = pd.merge(ted_talks, event_country_mapping, on="event")
+    output_ted_talks.drop("event", axis=1, inplace=True)
+    
     # Save preprocessed dataset
-    ted_talks.to_csv("data/ted_talks_preprocessed.csv", index=False)
+    output_ted_talks.to_csv("data/ted_talks_preprocessed.csv", index=False)
 
 
 def load_data():

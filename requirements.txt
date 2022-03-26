@@ -2,3 +2,4 @@ kaggle
 pandas
 matplotlib
 seaborn
+wget

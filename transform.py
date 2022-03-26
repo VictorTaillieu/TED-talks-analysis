@@ -12,7 +12,7 @@ def transform_data():
 
     ted_talks["discussion_rate"] = ted_talks.comments / ted_talks.views
 
-    event_country_mapping = pd.read_csv("./event_country_mapping.csv")
+    event_country_mapping = pd.read_csv("data/event_country_mapping.csv")
 
     ted_talks = pd.merge(ted_talks, event_country_mapping, on="event")
     ted_talks.drop("event", axis=1, inplace=True)

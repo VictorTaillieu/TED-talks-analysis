@@ -48,7 +48,7 @@ def preprocess_data():
     ted_talks.related_talks = ted_talks.related_talks.apply(lambda x: list(evaluate(x).keys()))
 
     ted_talks.rename(columns={"speaker_1": "speaker", "about_speakers": "about_speaker"}, inplace=True)
-    
+
     # Save preprocessed dataset
     ted_talks.to_csv("data/ted_talks_preprocessed.csv", index=False)
 

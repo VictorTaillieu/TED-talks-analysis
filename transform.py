@@ -14,7 +14,7 @@ def transform_data():
     ted_talks.published_date = pd.to_datetime(ted_talks.published_date)
 
     # Discussion rate
-    ted_talks["discussion_rate"] = ted_talks.comments / ted_talks.views
+    ted_talks["discussion_rate"] = (ted_talks.comments / ted_talks.views).fillna(0)
 
     # Dates
     ted_talks["recorded_date"] = ted_talks.recorded_date.apply(lambda date: date.timestamp())
@@ -29,8 +29,8 @@ def transform_data():
     ted_talks = pd.merge(ted_talks, event_country_mapping, on="event")
 
     # Drop unwanted attributes and sort
-    ted_talks.drop(["about_speaker", "published_date", "event", "available_lang", "description", "transcript"], axis=1, inplace=True)
     ted_talks.sort_values(by="talk_id", inplace=True)
+    ted_talks.drop(["talk_id", "about_speaker", "published_date", "event", "available_lang", "description", "transcript"], axis=1, inplace=True)
 
     # Save transformed dataset
     ted_talks.to_csv("data/ted_talks_transformed.csv", index=False)

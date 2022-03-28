@@ -47,6 +47,7 @@ def predict(history, k):
 
     # Topic distance
     topic_dist = np.load("data/embeddings/related_distance.npy")
+    np.fill_diagonal(topic_dist, np.max(topic_dist))
     topic_cum_dist = cum_dist(topic_dist, history)
 
     # Sentiments
@@ -68,12 +69,12 @@ def predict(history, k):
     ])
 
     weights = np.array([
-        0,  # description
-        0,  # about_speaker
-        0,  # general_infos
+        1,  # description
+        1,  # about_speaker
+        1,  # general_infos
         1,  # topics
-        0,  # sentiment
-        0   # dates
+        1,  # sentiment
+        1   # dates
     ]).reshape(-1, 1)
 
     global_distance = np.mean(weights * combined_dist_matrix, axis=0)

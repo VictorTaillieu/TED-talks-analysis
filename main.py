@@ -6,7 +6,7 @@ from model import TEDflix
 
 
 @click.command()
-@click.argument("history", type=int, nargs=-1)
+@click.argument("history", type=int, nargs=-1, required=True)
 @click.option("-k", default=5, show_default=True, help="Number of recommendations to return")
 def main(history, k):
     model = TEDflix()

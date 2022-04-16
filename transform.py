@@ -6,6 +6,36 @@
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+
+from nltk import sent_tokenize
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+# Using https://huggingface.co/sentence-transformers
+from sentence_transformers import SentenceTransformer
+
+
+def compute_embeddings():
+    bert = SentenceTransformer('bert-base-nli-mean-tokens')
+    
+    desc_embeds = bert.encode(df_prepro.description)
+    speak_embeds = bert.encode(df_prepro.about_speaker)
+    
+    np.save("../data/desc_embeddings.npy", desc_embeds)
+    np.save("../data/embeddings/speak_embeddings.npy", speak_embeds)
+
+
+def compute_sentiments():
+    analyser = SentimentIntensityAnalyzer()
+
+    compound_mean = lambda transcript: np.mean([
+        analyser.polarity_scores(sentence)['compound'] for sentence in sent_tokenize(transcript)
+    ])
+    
+    tqdm.pandas()
+    sentiments = df_prepro.transcript.progress_apply(compound_mean)
+    
+    np.save("../data/embeddings/sentiments.npy", sentiments)
 
 
 def transform_data():
@@ -37,4 +67,6 @@ def transform_data():
 
 
 if __name__ == "__main__":
+    # compute_embeddings()
+    # compute_sentiments()
     transform_data()

@@ -24,10 +24,19 @@ def select_data(save=False):
 
     ted_talks = ted_talks[ted_talks.native_lang == "en"].reset_index(drop=True)
 
+    ted_talks[[
+        "title",
+        "speaker_1",
+        "published_date",
+        "available_lang",
+        "duration",
+        "url"
+    ]].to_csv("data/ted_talks_infos.csv", index=False)
+
     ted_talks.drop("native_lang", axis=1, inplace=True)
     ted_talks.drop("url", axis=1, inplace=True)
     ted_talks.drop("all_speakers", axis=1, inplace=True)
-    # ted_talks.drop("available_lang", axis=1, inplace=True)
+    ted_talks.drop("available_lang", axis=1, inplace=True)
 
     if save:
         ted_talks.to_csv("data/ted_talks_selected.csv", index=False)

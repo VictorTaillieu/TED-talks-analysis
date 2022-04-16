@@ -11,7 +11,7 @@ class TEDflix:
         self.trained = False
 
         self.df = pd.read_csv("data/ted_talks_transformed.csv")
-        
+
         if weights is None:
             self.weights = np.array([
                 1,  # description
@@ -25,16 +25,14 @@ class TEDflix:
         else:
             self.weights = weights
 
-
     @staticmethod
     def boolean_df(item_lists, unique_items):
         bool_dict = {}
-        
+
         for item in unique_items:
             bool_dict[item] = item_lists.apply(lambda x: item in x)
-        
-        return pd.DataFrame(bool_dict)
 
+        return pd.DataFrame(bool_dict)
 
     @staticmethod
     def cum_dist(dist_matrix, history):
@@ -46,7 +44,6 @@ class TEDflix:
         reshaped_values = data.reshape(-1, 1)
 
         return scaler.fit_transform(reshaped_values).T[0]
-
 
     def train(self):
         # Descriptions
@@ -66,22 +63,22 @@ class TEDflix:
         self.gen_dist = pairwise_distances(gen_infos, metric="euclidean")
         np.fill_diagonal(self.gen_dist, np.max(self.gen_dist))  # Which value to put between a talk and itself?
 
-        # Topic distance
+        # Related distance
         self.related_dist = np.load("data/embeddings/related_distance.npy")
         np.fill_diagonal(self.related_dist, np.max(self.related_dist))
 
         top = self.df.topics.apply(lambda x: literal_eval(x))
         one_hot_topics = TEDflix.boolean_df(top, top.explode().unique()).astype(int)
 
-        self.topics_dist = distance.squareform(distance.pdist(one_hot_topics,"jaccard"))
+        # Topics distance
+        self.topics_dist = distance.squareform(distance.pdist(one_hot_topics, "jaccard"))
         np.fill_diagonal(self.topics_dist, np.max(self.topics_dist))
 
-        self.sent_dist = pairwise_distances(np.array(self.df.sentiment).reshape(-1,1), metric="l1")
+        self.sent_dist = pairwise_distances(np.array(self.df.sentiment).reshape(-1, 1), metric="l1")
 
-        self.date_dist = pairwise_distances(np.array(self.df.recorded_date).reshape(-1,1), metric="l1")
+        self.date_dist = pairwise_distances(np.array(self.df.recorded_date).reshape(-1, 1), metric="l1")
 
         self.trained = True
-    
 
     def predict(self, history, k=5):
         if not self.trained:
@@ -113,11 +110,4 @@ class TEDflix:
         global_distance = np.mean(self.weights * combined_dist_matrix, axis=0)
 
         indices = np.argsort(global_distance)[:k]
-        return self.df.title[indices]
-
-if __name__ == "__main__":
-    model = TEDflix()
-    model.train()
-    
-    predictions = model.predict([1888, 3925])
-    print(predictions)
+        return indices

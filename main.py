@@ -1,20 +1,17 @@
 import click
+import numpy as np
 import pandas as pd
 from tabulate import tabulate
 
 from model import TEDflix
-import numpy as np
 
 
 @click.command()
 @click.argument("history", type=int, nargs=-1, required=True)
 @click.option("-k", default=5, show_default=True, help="Number of recommendations to return")
-
 def main(history, k):
     model = TEDflix()
     model.train()
-
-
 
     predictions = model.predict(history, k)
 

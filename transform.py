@@ -11,6 +11,8 @@ from tqdm import tqdm
 from nltk import sent_tokenize
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+from scipy.spatial import distance
+
 # Using https://huggingface.co/sentence-transformers
 from sentence_transformers import SentenceTransformer
 

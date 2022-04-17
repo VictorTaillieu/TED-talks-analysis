@@ -15,17 +15,17 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sentence_transformers import SentenceTransformer
 
 
-def compute_embeddings():
+def compute_embeddings(df):
     bert = SentenceTransformer('bert-base-nli-mean-tokens')
     
-    desc_embeds = bert.encode(df_prepro.description)
-    speak_embeds = bert.encode(df_prepro.about_speaker)
+    desc_embeds = bert.encode(df.description)
+    speak_embeds = bert.encode(df.about_speaker)
     
     np.save("../data/desc_embeddings.npy", desc_embeds)
     np.save("../data/embeddings/speak_embeddings.npy", speak_embeds)
 
 
-def compute_sentiments():
+def compute_sentiments(df):
     analyser = SentimentIntensityAnalyzer()
 
     compound_mean = lambda transcript: np.mean([
@@ -33,9 +33,26 @@ def compute_sentiments():
     ])
     
     tqdm.pandas()
-    sentiments = df_prepro.transcript.progress_apply(compound_mean)
+    sentiments = df.transcript.progress_apply(compound_mean)
     
     np.save("../data/embeddings/sentiments.npy", sentiments)
+
+
+def boolean_df(item_lists, unique_items):
+    bool_dict = {}
+
+    for item in unique_items:
+        bool_dict[item] = item_lists.apply(lambda x: item in x)
+
+    return pd.DataFrame(bool_dict)
+
+def compute_topic_distance(df):
+    top = df.topics.apply(lambda x: literal_eval(x))
+    one_hot_topics = boolean_df(top, top.explode().unique()).astype(int)
+
+    topics_dist = distance.squareform(distance.pdist(one_hot_topics, "jaccard"))
+    
+    np.save("../data/embeddings/topics_dist.npy", topics_dist)
 
 
 def transform_data():
@@ -67,6 +84,4 @@ def transform_data():
 
 
 if __name__ == "__main__":
-    # compute_embeddings()
-    # compute_sentiments()
     transform_data()

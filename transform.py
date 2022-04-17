@@ -24,7 +24,7 @@ def compute_embeddings(df):
     speak_embeds = bert.encode(df.about_speaker)
     
     np.save("../data/desc_embeddings.npy", desc_embeds)
-    np.save("../data/embeddings/speak_embeddings.npy", speak_embeds)
+    np.save("../data/distances/speak_embeddings.npy", speak_embeds)
 
 
 def compute_sentiments(df):
@@ -37,7 +37,7 @@ def compute_sentiments(df):
     tqdm.pandas()
     sentiments = df.transcript.progress_apply(compound_mean)
     
-    np.save("../data/embeddings/sentiments.npy", sentiments)
+    np.save("../data/distances/sentiments.npy", sentiments)
 
 
 def boolean_df(item_lists, unique_items):
@@ -54,7 +54,13 @@ def compute_topic_distance(df):
 
     topics_dist = distance.squareform(distance.pdist(one_hot_topics, "jaccard"))
     
-    np.save("../data/embeddings/topics_dist.npy", topics_dist)
+    np.save("../data/distances/topics_dist.npy", topics_dist)
+
+
+def compute_distances(df):
+	compute_embeddings(df)
+	compute_sentiments(df)
+	compute_topic_distance(df)
 
 
 def transform_data():
@@ -71,7 +77,7 @@ def transform_data():
     ted_talks["views_by_day"] = ted_talks.apply(lambda elt: elt.views / (pd.to_datetime("2020-05-01") - elt.published_date).days, axis=1)
 
     # Sentiments
-    ted_talks["sentiment"] = np.load("data/embeddings/sentiments.npy")
+    ted_talks["sentiment"] = np.load("data/distances/sentiments.npy")
 
     # Countries
     event_country_mapping = pd.read_csv("data/event_country_mapping.csv")

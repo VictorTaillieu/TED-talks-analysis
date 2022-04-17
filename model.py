@@ -4,6 +4,8 @@ from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import MinMaxScaler
 from ast import literal_eval
 
+from transform import compute_distances
+
 
 class TEDflix:
     def __init__(self, weights=None):
@@ -35,14 +37,17 @@ class TEDflix:
 
         return scaler.fit_transform(reshaped_values).T[0]
 
-    def train(self):
+    def train(self, recompute=False):
+    	if recompute:
+    		compute_distances(self.df)
+    	
         # Descriptions
-        desc_embeddings = np.load("data/embeddings/desc_embeddings.npy")
+        desc_embeddings = np.load("data/distances/desc_embeddings.npy")
         self.desc_dist = pairwise_distances(desc_embeddings, metric="cosine")
         np.fill_diagonal(self.desc_dist, 1)
 
         # About speaker
-        speak_embeddings = np.load("data/embeddings/speak_embeddings.npy")
+        speak_embeddings = np.load("data/distances/speak_embeddings.npy")
         self.speak_dist = pairwise_distances(speak_embeddings, metric="cosine")
         np.fill_diagonal(self.speak_dist, 1)
 
@@ -54,11 +59,11 @@ class TEDflix:
         np.fill_diagonal(self.gen_dist, np.max(self.gen_dist))  # Which value to put between a talk and itself?
 
         # Related distance
-        self.related_dist = np.load("data/embeddings/related_distance.npy")
+        self.related_dist = np.load("data/distances/related_distance.npy")
         np.fill_diagonal(self.related_dist, np.max(self.related_dist))
 
         # Topics distance
-        self.topics_dist = np.load("data/embeddings/topics_dist.npy")
+        self.topics_dist = np.load("data/distances/topics_dist.npy")
         np.fill_diagonal(self.topics_dist, np.max(self.topics_dist))
 
         # Sentiment distance

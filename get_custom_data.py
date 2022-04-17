@@ -14,7 +14,7 @@ rename("event_country_mapping.csv", "data/event_country_mapping.csv")
 print("\n\nExtracting data...")
 
 with ZipFile("ted_embeddings.zip") as zip:
-  zip.extractall(path="data/embeddings/")
+  zip.extractall(path="data/distances/")
 remove("ted_embeddings.zip")
 
 print("-- Done --")

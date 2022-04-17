@@ -5,3 +5,5 @@ seaborn
 wget
 tabulate
 scipy
+nltk
+sentence_transformers

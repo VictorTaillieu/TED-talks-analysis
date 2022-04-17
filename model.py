@@ -38,9 +38,9 @@ class TEDflix:
         return scaler.fit_transform(reshaped_values).T[0]
 
     def train(self, recompute=False):
-    	if recompute:
-    		compute_distances(self.df)
-    	
+        if recompute:
+            compute_distances(self.df)
+        
         # Descriptions
         desc_embeddings = np.load("data/distances/desc_embeddings.npy")
         self.desc_dist = pairwise_distances(desc_embeddings, metric="cosine")
@@ -68,9 +68,11 @@ class TEDflix:
 
         # Sentiment distance
         self.sent_dist = pairwise_distances(np.array(self.df.sentiment).reshape(-1, 1), metric="l1")
+        np.fill_diagonal(self.sent_dist, np.max(self.sent_dist))
 
         # Date distance
         self.date_dist = pairwise_distances(np.array(self.df.recorded_date).reshape(-1, 1), metric="l1")
+        np.fill_diagonal(self.date_dist, np.max(self.date_dist))
 
         self.trained = True
 

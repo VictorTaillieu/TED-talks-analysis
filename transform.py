@@ -15,6 +15,7 @@ from scipy.spatial import distance
 
 # Using https://huggingface.co/sentence-transformers
 from sentence_transformers import SentenceTransformer
+from ast import literal_eval
 
 
 def compute_embeddings(df):

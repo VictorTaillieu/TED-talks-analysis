@@ -18,9 +18,9 @@ class TEDflix:
                 1,  # about_speaker
                 1,  # general_infos
                 1,  # related dist
+                1,  # topics dist
                 1,  # sentiment
-                1,  # dates
-                1   # topics dist
+                1   # dates
             ]).reshape(-1, 1)
         else:
             self.weights = weights

@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import MinMaxScaler
-from ast import literal_eval
 
 from transform import compute_distances
 
@@ -40,7 +39,7 @@ class TEDflix:
     def train(self, recompute=False):
         if recompute:
             compute_distances(self.df)
-        
+
         # Descriptions
         desc_embeddings = np.load("data/distances/desc_embeddings.npy")
         self.desc_dist = pairwise_distances(desc_embeddings, metric="cosine")

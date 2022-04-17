@@ -4,3 +4,4 @@ matplotlib
 seaborn
 wget
 tabulate
+scipy

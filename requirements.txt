@@ -2,3 +2,8 @@ kaggle
 pandas
 matplotlib
 seaborn
+wget
+tabulate
+scipy
+nltk
+sentence_transformers
